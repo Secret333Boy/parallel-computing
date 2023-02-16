@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/balls/balls.iml" filepath="$PROJECT_DIR$/balls/balls.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chars-threads/chars-threads.iml" filepath="$PROJECT_DIR$/chars-threads/chars-threads.iml" />
+      <module fileurl="file://$PROJECT_DIR$/counter/counter.iml" filepath="$PROJECT_DIR$/counter/counter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/parallel-computing.iml" filepath="$PROJECT_DIR$/.idea/parallel-computing.iml" />
+    </modules>
+  </component>
+</project>
