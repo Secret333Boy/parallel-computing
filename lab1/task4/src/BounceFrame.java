@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.Random;
 
 public class BounceFrame extends JFrame {
     public static final int WIDTH = 500;
@@ -27,28 +26,31 @@ public class BounceFrame extends JFrame {
         JTextField textField = new JTextField("0", 2);
 
 
-        Hole leftTopHole = new Hole(canvas,HolePosition.LEFT_TOP, HOLE_SIZE);
+        Hole leftTopHole = new Hole(canvas, HolePosition.LEFT_TOP, HOLE_SIZE);
         Hole rightTopHole = new Hole(canvas, HolePosition.RIGHT_TOP, HOLE_SIZE);
-        Hole leftBottomHole = new Hole(canvas,HolePosition.LEFT_BOTTOM, HOLE_SIZE);
-        Hole rightBottomHole = new Hole(canvas,HolePosition.RIGHT_BOTTOM, HOLE_SIZE);
+        Hole leftBottomHole = new Hole(canvas, HolePosition.LEFT_BOTTOM, HOLE_SIZE);
 
-        Hole[] holes = {leftTopHole, rightTopHole, leftBottomHole, rightBottomHole};
+        Hole[] holes = {leftTopHole, rightTopHole, leftBottomHole};
         canvas.addHoles(holes);
 
         buttonStart.addActionListener(e -> {
-            BallPriority priority = Math.random() < 0.5 ? BallPriority.HIGH : BallPriority.STANDARD;
+            Ball ball1 = new Ball(canvas, Color.BLUE);
+            Ball ball2 = new Ball(canvas, Color.YELLOW);
+            canvas.addBall(ball1);
+            canvas.addBall(ball2);
 
-            Ball ball = new Ball(canvas, priority);
-            canvas.addBall(ball);
-
-            BallThread thread = new BallThread(ball, () -> {
+            BallThread thread1 = new BallThread(ball1, () -> {
                 ballsInAHole++;
                 textField.setText(String.valueOf(ballsInAHole));
-                canvas.removeBall(ball);
+                canvas.removeBall(ball1);
             }, holes);
-            thread.setPriority(priority == BallPriority.HIGH ? 10 : 5);
-            thread.start();
-            System.out.println("Thread name = " + thread.getName());
+            BallThread thread2 = new BallThread(ball2, () -> {
+                ballsInAHole++;
+                textField.setText(String.valueOf(ballsInAHole));
+                canvas.removeBall(ball2);
+            }, holes, thread1);
+            thread1.start();
+            thread2.start();
         });
         buttonStop.addActionListener(e -> System.exit(0));
 
