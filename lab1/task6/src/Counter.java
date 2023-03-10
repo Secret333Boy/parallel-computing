@@ -3,10 +3,12 @@ public class Counter {
     private int c = 0;
 
     public void increment() {
-        c++;
+        synchronized(this) {
+            c++;
+        }
     }
 
-    public void decrement() {
+    public synchronized void decrement() {
         c--;
     }
 

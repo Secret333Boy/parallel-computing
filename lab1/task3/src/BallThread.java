@@ -20,7 +20,6 @@ public class BallThread extends Thread {
                     this.ballsInAHoleUpdater.updateBallsInAHole();
                     break;
                 }
-                System.out.println("Thread name = " + Thread.currentThread().getName());
                 Thread.sleep(5);
             }
         } catch (InterruptedException ignored) {

@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/lab1/chars-threads/chars-threads.iml" filepath="$PROJECT_DIR$/lab1/chars-threads/chars-threads.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab1/counter/counter.iml" filepath="$PROJECT_DIR$/lab1/counter/counter.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab1/lab1.iml" filepath="$PROJECT_DIR$/lab1/lab1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lab2/lab2.iml" filepath="$PROJECT_DIR$/lab2/lab2.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/parallel-computing.iml" filepath="$PROJECT_DIR$/.idea/parallel-computing.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab1/task1/task1.iml" filepath="$PROJECT_DIR$/lab1/task1/task1.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab1/task2/task2.iml" filepath="$PROJECT_DIR$/lab1/task2/task2.iml" />

@@ -29,7 +29,7 @@ public class BounceFrame extends JFrame {
 
         buttonStart.addActionListener(e -> {
             for (int i = 0; i < 1000; i++) {
-                Ball ball = new Ball(canvas, BallPriority.STANDARD);
+                Ball ball = new Ball(canvas, BallPriority.HIGH);
                 canvas.addBall(ball);
 
                 BallThread thread = new BallThread(ball, () -> {
@@ -39,10 +39,9 @@ public class BounceFrame extends JFrame {
                 }, holes);
                 thread.setPriority(5);
                 thread.start();
-                System.out.println("Thread name = " + thread.getName());
             }
 
-            Ball ball = new Ball(canvas, BallPriority.HIGH);
+            Ball ball = new Ball(canvas, BallPriority.STANDARD);
             canvas.addBall(ball);
 
             BallThread thread = new BallThread(ball, () -> {
