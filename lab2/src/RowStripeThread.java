@@ -13,33 +13,35 @@ public class RowStripeThread extends Thread {
 
     @Override
     public void run() {
-        synchronized (columnStripeClock) {
-            columnStripeClock.register();
+        columnStripeClock.register();
 
-            int[] previousIterationColumn = null;
+        int previousIterationIndex = -1;
 
-            for (int k = 0; k < row.length; k++) {
-                int[] column = columnStripeClock.getColumn();
+        for (int k = 0; k < row.length; k++) {
+            int index;
+            synchronized (columnStripeClock) {
+                index = columnStripeClock.getIndex();
 
-                while (column == previousIterationColumn) {
+                while (index == previousIterationIndex) {
                     try {
                         columnStripeClock.wait();
-                        column = columnStripeClock.getColumn();
+                        index = columnStripeClock.getIndex();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
-
-                previousIterationColumn = column;
-
-                int newValue = 0;
-                for (int i = 0; i < row.length; i++) {
-                    newValue += row[i] * column[i];
-                }
-
-                matrixRowStripeSetter.set(k + y >= row.length ? k + y - row.length : k + y, y, newValue);
-                columnStripeClock.tick();
+                previousIterationIndex = index;
             }
+
+            int[] column = columnStripeClock.getColumn();
+
+            int newValue = 0;
+            for (int i = 0; i < row.length; i++) {
+                newValue += row[i] * column[i];
+            }
+
+            matrixRowStripeSetter.set(index, y, newValue);
+            columnStripeClock.tick();
         }
     }
 }

@@ -14,8 +14,8 @@ public class Main {
     }
 
     public static void testOnBigMatrix() {
-        Matrix matrix1 = Matrix.randomMatrix(200, 200);
-        Matrix matrix2 = Matrix.randomMatrix(200, 200);
+        Matrix matrix1 = Matrix.randomMatrix(500, 500);
+        Matrix matrix2 = Matrix.randomMatrix(500, 500);
 
         final long singleThreadTimeStart = System.currentTimeMillis();
         Matrix singleThreadResult = matrix1.multiplySingleThread(matrix2);
@@ -25,8 +25,8 @@ public class Main {
         final long stripeThreadTimeStart = System.currentTimeMillis();
         Matrix stripeResult = matrix1.multiplyStripe(matrix2);
         final long stripeThreadTimeEnd = System.currentTimeMillis();
-        System.out.println("Single thread total execution time: " + (stripeThreadTimeEnd - stripeThreadTimeStart) + "ms");
+        System.out.println("Stripe algorithm total execution time: " + (stripeThreadTimeEnd - stripeThreadTimeStart) + "ms");
 
-        System.out.println(singleThreadResult.hasSameElements(stripeResult));
+        System.out.println("Stripe algorithm OK: " + singleThreadResult.hasSameElements(stripeResult));
     }
 }

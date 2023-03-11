@@ -30,7 +30,11 @@ public class ColumnStripeClock {
         registeredThreads.add(Thread.currentThread());
     }
 
-    public synchronized int[] getColumn() {
+    public int getIndex() {
+        return registeredThreads.indexOf(Thread.currentThread());
+    }
+
+    public int[] getColumn() {
         int index = registeredThreads.indexOf(Thread.currentThread());
 
         if (index < 0) throw new RuntimeException("Thread is not registered");
@@ -41,21 +45,33 @@ public class ColumnStripeClock {
     public synchronized void tick() {
         tickedThreads++;
 
+        if (registeredThreads.size() != threadsToWait) return;
+
         if (tickedThreads == threadsToWait) {
             tickedThreads = 0;
         } else return;
 
-        int[] buf = columns[0];
-        for (int i = 1; i < columns.length; i++) {
-            columns[i - 1] = columns[i];
-        }
-        columns[columns.length - 1] = buf;
+        this.shift();
 
         finishedIterations++;
         this.notifyAll();
     }
 
+    private synchronized void shift() {
+        int size = registeredThreads.size();
+        if (size == 0) throw new RuntimeException("Unable to shift: no threads were registered");
+        Thread buf = registeredThreads.get(0);
+        for (int i = 1; i < size; i++) {
+            registeredThreads.set(i - 1, registeredThreads.get(i));
+        }
+        registeredThreads.set(size - 1, buf);
+    }
+
     public boolean isFullCycle() {
         return finishedIterations == columns.length;
+    }
+
+    public List<Thread> getRegisteredThreads() {
+        return registeredThreads;
     }
 }

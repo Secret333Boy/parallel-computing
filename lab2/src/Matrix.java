@@ -100,9 +100,8 @@ public class Matrix {
 
         List<RowStripeThread> threadList = new ArrayList<>();
         for (int j = 0; j < n; j++) {
-            RowStripeThread rowStripeThread = new RowStripeThread(this.array[j], j, columnStripeClock, (int x, int y, int value) -> {
-                newArrayMatrix[y][x] = value;
-            });
+            RowStripeThread rowStripeThread = new RowStripeThread(this.array[j], j, columnStripeClock, (int x, int y, int value) -> newArrayMatrix[y][x] = value);
+            rowStripeThread.setPriority(10);
             rowStripeThread.start();
             threadList.add(rowStripeThread);
         }
