@@ -20,7 +20,7 @@ public class ProducerThread extends Thread {
                 sharedBuffer.put(value);
                 SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                 Date now = new Date();
-                System.out.println("[" + sdfDate.format(now) + "]" + " [PRODUCER] Sent message: " + value);
+                System.out.println("[" + sdfDate.format(now) + "]" + " [PRODUCER] Sent message: " + value + ". Shared buffer maximum size: " + sharedBuffer.getMaximumSize());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

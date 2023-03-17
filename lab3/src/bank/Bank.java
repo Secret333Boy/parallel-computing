@@ -1,9 +1,14 @@
 package bank;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Bank {
     public static final int NTEST = 10000;
     private final int[] accounts;
     private long ntransacts = 0;
+
+    private final Lock locker = new ReentrantLock();
 
     public Bank(int n, int initialBalance) {
         accounts = new int[n];
@@ -33,6 +38,18 @@ public class Bank {
             accounts[to] += amount;
             ntransacts++;
             if (ntransacts % NTEST == 0) test();
+        }
+    }
+
+    public void transferLock(int from, int to, int amount) {
+        locker.lock();
+        try {
+            accounts[from] -= amount;
+            accounts[to] += amount;
+            ntransacts++;
+            if (ntransacts % NTEST == 0) test();
+        } finally {
+            locker.unlock();
         }
     }
 
