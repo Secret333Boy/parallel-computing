@@ -1,5 +1,8 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Matrix {
     public static int MAX_RANDOM_VALUE = 1000;
@@ -46,6 +49,21 @@ public class Matrix {
         }
 
         return column;
+    }
+
+    public Matrix getTransponedMatrix() {
+        int n = this.getHeight();
+        int m = this.getWidth();
+
+        int[][] newMatrixArray = new int[m][n];
+
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                newMatrixArray[i][j] = this.array[j][i];
+            }
+        }
+
+        return new Matrix(newMatrixArray);
     }
 
     public int getWidth() {
@@ -95,26 +113,32 @@ public class Matrix {
         int n = this.getHeight();
         int m = this.getWidth();
 
-        int[][] newArrayMatrix = new int[n][m];
+        int threadsCount = Runtime.getRuntime().availableProcessors();
+
+        ExecutorService threadPool = Executors.newFixedThreadPool(threadsCount);
+
         ColumnStripeClock columnStripeClock = new ColumnStripeClock(matrix);
 
-        List<RowStripeThread> threadList = new ArrayList<>();
+
+        Future<int[]>[] futures = new Future[n];
         for (int j = 0; j < n; j++) {
-            RowStripeThread rowStripeThread = new RowStripeThread(this.array[j], j, columnStripeClock, (int x, int y, int value) -> newArrayMatrix[y][x] = value);
-            rowStripeThread.setPriority(10);
-            rowStripeThread.start();
-            threadList.add(rowStripeThread);
+            Future<int[]> rowFuture = threadPool.submit(new RowStripeCallable(this.array[j], columnStripeClock));
+            futures[j] = rowFuture;
         }
 
-        for (RowStripeThread thread : threadList) {
+        int[][] newMatrixArray = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
             try {
-                thread.join();
-            } catch (InterruptedException e) {
+                newMatrixArray[i] = futures[i].get();
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        return new Matrix(newArrayMatrix);
+        threadPool.close();
+
+        return new Matrix(newMatrixArray);
     }
 
     @Override

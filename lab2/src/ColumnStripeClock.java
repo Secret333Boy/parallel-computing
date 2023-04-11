@@ -1,77 +1,87 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ColumnStripeClock {
     private final int[][] columns;
-    private final int threadsToWait;
-    private final List<Thread> registeredThreads = new ArrayList<>();
-    private int tickedThreads = 0;
-    private int finishedIterations = 0;
+    private final Map<Integer, Integer> idToIndexMap = new HashMap<>();
 
     public ColumnStripeClock(Matrix matrix) {
-        int m = matrix.getWidth();
-        int n = matrix.getHeight();
-        int[][] columns = new int[m][n];
-        for (int i = 0; i < m; i++) {
-            columns[i] = matrix.getColumn(i);
-        }
-
-        this.columns = columns;
-        this.threadsToWait = n;
+        this.columns = matrix.getTransponedMatrix().getArray();
     }
 
-    public synchronized void register() {
-        int size = registeredThreads.size();
-        if (size == threadsToWait) throw new RuntimeException("Maximum registered threads");
-
-        if (registeredThreads.contains(Thread.currentThread()))
-            throw new RuntimeException("Thread is already registered");
-
-        registeredThreads.add(Thread.currentThread());
+    public synchronized int register() {
+        int id = idToIndexMap.size();
+        idToIndexMap.put(id, id);
+        return id;
     }
 
-    public int getIndex() {
-        return registeredThreads.indexOf(Thread.currentThread());
+    public synchronized int getIndex(int id) throws Exception {
+        int i = idToIndexMap.get(id);
+
+        if (i < 0) throw new Exception("Unregistered value");
+        return i;
     }
 
-    public int[] getColumn() {
-        int index = registeredThreads.indexOf(Thread.currentThread());
-
-        if (index < 0) throw new RuntimeException("Thread is not registered");
-
-        return columns[index];
+    public synchronized int[] getColumn(int id) throws Exception {
+        return columns[this.getIndex(id)];
     }
 
-    public synchronized void tick() {
-        tickedThreads++;
-
-        if (registeredThreads.size() != threadsToWait) return;
-
-        if (tickedThreads == threadsToWait) {
-            tickedThreads = 0;
-        } else return;
-
-        this.shift();
-
-        finishedIterations++;
-        this.notifyAll();
+    public synchronized void shift(int id) {
+        int index = idToIndexMap.get(id);
+        idToIndexMap.put(id, index == columns.length - 1 ? 0 : index + 1);
     }
 
-    private synchronized void shift() {
-        int size = registeredThreads.size();
-        if (size == 0) throw new RuntimeException("Unable to shift: no threads were registered");
-        Thread buf = registeredThreads.get(0);
-        for (int i = 1; i < size; i++) {
-            registeredThreads.set(i - 1, registeredThreads.get(i));
-        }
-        registeredThreads.set(size - 1, buf);
-    }
+//    public synchronized void register() {
+//        int size = registeredThreads.size();
+//        if (size == threadsToWait) throw new RuntimeException("Maximum registered threads");
+//
+//        if (registeredThreads.contains(Thread.currentThread()))
+//            throw new RuntimeException("Thread is already registered");
+//
+//        registeredThreads.add(Thread.currentThread());
+//    }
+//
+//    public int getIndex() {
+//        return registeredThreads.indexOf(Thread.currentThread());
+//    }
+//
+//    public int[] getColumn() {
+//        int index = registeredThreads.indexOf(Thread.currentThread());
+//
+//        if (index < 0) throw new RuntimeException("Thread is not registered");
+//
+//        return columns[index];
+//    }
+//
+//    public synchronized void tick() {
+//        tickedThreads++;
+//
+//        if (registeredThreads.size() != threadsToWait) return;
+//
+//        if (tickedThreads == threadsToWait) {
+//            tickedThreads = 0;
+//        } else return;
+//
+//        this.shift();
+//
+//        finishedIterations++;
+//        this.notifyAll();
+//    }
+//
+//    private synchronized void shift() {
+//        int size = registeredThreads.size();
+//        if (size == 0) throw new RuntimeException("Unable to shift: no threads were registered");
+//        Thread buf = registeredThreads.get(0);
+//        for (int i = 1; i < size; i++) {
+//            registeredThreads.set(i - 1, registeredThreads.get(i));
+//        }
+//        registeredThreads.set(size - 1, buf);
+//    }
+//
 
-    public boolean isFullCycle() {
-        return finishedIterations == columns.length;
-    }
-
-    public List<Thread> getRegisteredThreads() {
-        return registeredThreads;
-    }
+//
+//    public List<Thread> getRegisteredThreads() {
+//        return registeredThreads;
+//    }
 }

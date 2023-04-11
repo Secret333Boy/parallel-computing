@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
 //        int[][] array = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14,15, 16}};
@@ -14,8 +16,8 @@ public class Main {
     }
 
     public static void testOnBigMatrix() {
-        Matrix matrix1 = Matrix.randomMatrix(500, 500);
-        Matrix matrix2 = Matrix.randomMatrix(500, 500);
+        Matrix matrix1 = Matrix.randomMatrix(1000, 1000);
+        Matrix matrix2 = Matrix.randomMatrix(1000, 1000);
 
         final long singleThreadTimeStart = System.currentTimeMillis();
         Matrix singleThreadResult = matrix1.multiplySingleThread(matrix2);
