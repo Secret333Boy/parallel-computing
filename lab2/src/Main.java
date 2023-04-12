@@ -19,16 +19,12 @@ public class Main {
         Matrix matrix1 = Matrix.randomMatrix(1000, 1000);
         Matrix matrix2 = Matrix.randomMatrix(1000, 1000);
 
-        final long singleThreadTimeStart = System.currentTimeMillis();
-        Matrix singleThreadResult = matrix1.multiplySingleThread(matrix2);
-        final long singleThreadTimeEnd = System.currentTimeMillis();
-        System.out.println("Single thread total execution time: " + (singleThreadTimeEnd - singleThreadTimeStart) + "ms");
+        Result singleThreadResult = matrix1.multiplySingleThread(matrix2);
+        System.out.println("Single thread total execution time: " + (singleThreadResult.getElapsedTime()) + "ms");
 
-        final long stripeThreadTimeStart = System.currentTimeMillis();
-        Matrix stripeResult = matrix1.multiplyStripe(matrix2);
-        final long stripeThreadTimeEnd = System.currentTimeMillis();
-        System.out.println("Stripe algorithm total execution time: " + (stripeThreadTimeEnd - stripeThreadTimeStart) + "ms");
+        Result stripeResult = matrix1.multiplyStripe(matrix2);
+        System.out.println("Stripe algorithm total execution time: " + (stripeResult.getElapsedTime()) + "ms");
 
-        System.out.println("Stripe algorithm OK: " + singleThreadResult.hasSameElements(stripeResult));
+        System.out.println("Stripe algorithm OK: " + singleThreadResult.compareTo(stripeResult));
     }
 }

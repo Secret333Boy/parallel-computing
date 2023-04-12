@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -86,7 +85,9 @@ public class Matrix {
         return this.getWidth() == matrix.getHeight() && this.getHeight() == matrix.getWidth();
     }
 
-    public Matrix multiplySingleThread(Matrix matrix) {
+    public Result multiplySingleThread(Matrix matrix) {
+        final long startTime = System.currentTimeMillis();
+
         if (!this.validateMatrixForProduct(matrix)) throw new RuntimeException("Matrix has bad size");
 
         int n = this.getHeight();
@@ -104,10 +105,16 @@ public class Matrix {
             }
         }
 
-        return new Matrix(newArrayMatrix);
+        Matrix resultMatrix = new Matrix(newArrayMatrix);
+
+        final long endTime = System.currentTimeMillis();
+
+        return new Result(resultMatrix, endTime - startTime);
     }
 
-    public Matrix multiplyStripe(Matrix matrix) {
+    public Result multiplyStripe(Matrix matrix) {
+        final long startTime = System.currentTimeMillis();
+
         if (!this.validateMatrixForProduct(matrix)) throw new RuntimeException("Matrix has bad size");
 
         int n = this.getHeight();
@@ -138,7 +145,11 @@ public class Matrix {
 
         threadPool.close();
 
-        return new Matrix(newMatrixArray);
+        Matrix resultMatrix = new Matrix(newMatrixArray);
+
+        final long endTime = System.currentTimeMillis();
+
+        return new Result(resultMatrix, endTime - startTime);
     }
 
     @Override
