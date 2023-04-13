@@ -1,13 +1,12 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ColumnStripeClock {
     private final int[][] columns;
     private final Map<Integer, Integer> idToIndexMap = new HashMap<>();
 
-    public ColumnStripeClock(Matrix matrix) {
-        this.columns = matrix.getTransponedMatrix().getArray();
+    public ColumnStripeClock(IntegerMatrix integerMatrix) {
+        this.columns = integerMatrix.getTransponedMatrix().getArray();
     }
 
     public synchronized int register() {

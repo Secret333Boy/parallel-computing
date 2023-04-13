@@ -1,14 +1,14 @@
 public class Result {
-    private final Matrix matrix;
+    private final IntegerMatrix integerMatrix;
     private final long elapsedTime;
 
-    public Result(Matrix matrix, long elapsedTime) {
-        this.matrix = matrix;
+    public Result(IntegerMatrix integerMatrix, long elapsedTime) {
+        this.integerMatrix = integerMatrix;
         this.elapsedTime = elapsedTime;
     }
 
     public void printMatrix() {
-        System.out.println(matrix);
+        System.out.println(integerMatrix);
     }
 
     public long getElapsedTime() {
@@ -16,6 +16,10 @@ public class Result {
     }
 
     public boolean compareTo(Result result) {
-        return matrix.hasSameElements(result.matrix);
+        return integerMatrix.hasSameElements(result.integerMatrix);
+    }
+
+    public IntegerMatrix getMatrix() {
+        return this.integerMatrix;
     }
 }
