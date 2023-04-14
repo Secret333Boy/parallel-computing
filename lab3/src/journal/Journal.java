@@ -19,17 +19,23 @@ public class Journal {
         }
     }
 
-    public synchronized void addGrade(Student student, int grade) {
-        if (grade < 0 || grade > 100) throw new RuntimeException("Wrong grade");
+    public void addGrade(Student student, int grade) {
+        synchronized (studentGradesMap) {
+            if (grade < 0 || grade > 100) throw new RuntimeException("Wrong grade");
 
-        studentGradesMap.get(student).add(grade);
+            studentGradesMap.get(student).add(grade);
+        }
     }
 
-    public synchronized List<Group> getGroupList() {
-        return new ArrayList<>(groupList);
+    public List<Group> getGroupList() {
+        synchronized (groupList) {
+            return new ArrayList<>(groupList);
+        }
     }
 
-    public synchronized List<Integer> getGrades(Student student) {
-        return this.studentGradesMap.get(student);
+    public List<Integer> getGrades(Student student) {
+        synchronized(studentGradesMap) {
+            return this.studentGradesMap.get(student);
+        }
     }
 }

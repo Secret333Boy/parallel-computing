@@ -1,8 +1,9 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        int[][] array1 = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14,15, 16}};
+        int[][] array1 = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
         int[][] array2 = {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
         IntegerMatrix matrix = new IntegerMatrix(array1);
 //        IntegerMatrix matrix = new IntegerMatrix(array2);
@@ -15,23 +16,92 @@ public class Main {
 //
 //        System.out.println(matrix.hasSameElements(matrix));
 
-        Main.testOnBigMatrix();
+//        Main.testOnBigMatrix();
+        Main.printAverageStats(2500, 10, 5);
     }
 
     public static void testOnBigMatrix() {
-        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(2000, 2000);
-        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(2000, 2000);
+        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(1500, 1500);
+        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(1500, 1500);
 
         Result singleThreadResult = integerMatrix1.multiplySingleThread(integerMatrix2);
         System.out.println("Single thread total execution time: " + (singleThreadResult.getElapsedTime()) + "ms");
 
-        Result stripeResult = integerMatrix1.multiplyStripe(integerMatrix2);
+        int threadsCount = 4;
+
+        System.out.println("Threads: " + threadsCount);
+
+        Result stripeResult = integerMatrix1.multiplyStripe(integerMatrix2, threadsCount);
         System.out.println("Stripe algorithm total execution time: " + (stripeResult.getElapsedTime()) + "ms");
 
-        Result foxResult = integerMatrix1.multiplyFox(integerMatrix2, 10);
+        int blockSize = 10;
+        System.out.println("Block size: " + blockSize);
+
+        Result foxResult = integerMatrix1.multiplyFox(integerMatrix2, blockSize, threadsCount);
         System.out.println("Fox algorithm total execution time: " + (foxResult.getElapsedTime()) + "ms");
 
         System.out.println("Stripe algorithm OK: " + singleThreadResult.compareTo(stripeResult));
         System.out.println("Fox algorithm OK: " + singleThreadResult.compareTo(foxResult));
+    }
+
+    public static void printAverageStats(int matrixSize, int blockSize, int testsCount) {
+        System.out.println("Matrix size: " + matrixSize);
+        System.out.println("Block size: " + blockSize);
+
+        List<Long> serialTimeList = new ArrayList<>();
+
+        for (int i = 0; i < testsCount; i++) {
+            IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(matrixSize, matrixSize);
+            IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(matrixSize, matrixSize);
+
+            Result serialThreadResult = integerMatrix1.multiplySingleThread(integerMatrix2);
+            serialTimeList.add(serialThreadResult.getElapsedTime());
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        float averageSerialTime = ((float) serialTimeList.stream().reduce(Long::sum).get()) / testsCount;
+        System.out.printf("Single thread average execution time: %fs\n", averageSerialTime / 1000);
+
+        for (int k = 1; k < 5; k++) {
+            int threadsCount = k * 2;
+
+            if (threadsCount == 6) continue;
+
+            System.out.println("---");
+            System.out.println("Threads: " + threadsCount);
+            List<Long> stripeTimeList = new ArrayList<>();
+            List<Long> foxTimeList = new ArrayList<>();
+
+            for (int i = 0; i < testsCount; i++) {
+                IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(matrixSize, matrixSize);
+                IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(matrixSize, matrixSize);
+
+                Result stripeResult = integerMatrix1.multiplyStripe(integerMatrix2, threadsCount);
+                stripeTimeList.add(stripeResult.getElapsedTime());
+
+                Result foxResult = integerMatrix1.multiplyFox(integerMatrix2, blockSize, threadsCount);
+                foxTimeList.add(foxResult.getElapsedTime());
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            float averageStripeTime = ((float) stripeTimeList.stream().reduce(Long::sum).get()) / testsCount;
+            float averageFoxTime = ((float) foxTimeList.stream().reduce(Long::sum).get()) / testsCount;
+
+            System.out.printf("Stripe algorithm average execution time: %fs\n", averageStripeTime / 1000);
+            System.out.printf("Fox algorithm average execution time: %fs\n", averageFoxTime / 1000);
+
+            System.out.printf("Stripe speed up: %f\n", averageSerialTime / averageStripeTime);
+            System.out.printf("Fox speed up: %f\n", averageSerialTime / averageFoxTime);
+        }
     }
 }

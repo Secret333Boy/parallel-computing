@@ -1,17 +1,14 @@
 package journal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Teacher {
+public class Lecturer {
     private final Journal journal;
 
-    public Teacher(Journal journal) {
+    public Lecturer(Journal journal) {
         this.journal = journal;
     }
 
     public void addGrades() throws InterruptedException {
-        GradeThread gradeThread = new GradeThread(journal);
+        GradeThread gradeThread = new GradeThread(journal, null);
 
         gradeThread.start();
         gradeThread.join();
