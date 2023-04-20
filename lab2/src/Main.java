@@ -12,6 +12,7 @@ public class Main {
 //        matrix.multiplySingleThread(matrix).printMatrix();
 //        matrix.multiplyStripe(matrix).printMatrix();
 //        matrix.multiplyFox(matrix, 2).printMatrix();
+//        matrix.multiplyForkJoin(matrix, 2).printMatrix();
 //
 //        System.out.println(matrix.hasSameElements(matrix));
 
@@ -19,8 +20,8 @@ public class Main {
     }
 
     public static void testOnBigMatrix() {
-        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(2000, 2000);
-        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(2000, 2000);
+        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(1500, 1500);
+        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(1500, 1500);
 
         Result singleThreadResult = integerMatrix1.multiplySingleThread(integerMatrix2);
         System.out.println("Single thread total execution time: " + (singleThreadResult.getElapsedTime()) + "ms");
@@ -31,7 +32,11 @@ public class Main {
         Result foxResult = integerMatrix1.multiplyFox(integerMatrix2, 10);
         System.out.println("Fox algorithm total execution time: " + (foxResult.getElapsedTime()) + "ms");
 
+        Result forkJoinResult = integerMatrix1.multiplyForkJoin(integerMatrix2);
+        System.out.println("Fork join algorithm total execution time: " + (forkJoinResult.getElapsedTime()) + "ms");
+
         System.out.println("Stripe algorithm OK: " + singleThreadResult.compareTo(stripeResult));
         System.out.println("Fox algorithm OK: " + singleThreadResult.compareTo(foxResult));
+        System.out.println("Fork join algorithm OK: " + singleThreadResult.compareTo(forkJoinResult));
     }
 }

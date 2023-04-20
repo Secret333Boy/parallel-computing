@@ -1,7 +1,4 @@
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class IntegerMatrix {
     public static int MAX_RANDOM_VALUE = 1000;
@@ -248,6 +245,26 @@ public class IntegerMatrix {
         final long endTime = System.currentTimeMillis();
 
         return new Result(resultIntegerMatrix, endTime - startTime);
+    }
+
+    public Result multiplyForkJoin(IntegerMatrix integerMatrix) {
+        final long startTime = System.currentTimeMillis();
+
+        if (!this.validateMatrixForProduct(integerMatrix)) throw new RuntimeException("Matrix has bad size");
+
+        ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
+
+        Future<IntegerMatrix> integerMatrixFuture = forkJoinPool.submit(new MultiplyTask(this.array, integerMatrix.getTransponedMatrix().array, 0, this.array.length));
+
+        forkJoinPool.shutdown();
+
+        try {
+            IntegerMatrix matrix = integerMatrixFuture.get();
+            final long endTime = System.currentTimeMillis();
+            return new Result(matrix, endTime - startTime);
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
