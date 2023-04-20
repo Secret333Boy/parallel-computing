@@ -12,10 +12,10 @@ public class Main {
         journal.addGroup(group2);
         journal.addGroup(group3);
 
-        Teacher lecturer = new Teacher(journal);
-        Teacher assistant1 = new Teacher(journal);
-        Teacher assistant2 = new Teacher(journal);
-        Teacher assistant3 = new Teacher(journal);
+        Lecturer lecturer = new Lecturer(journal);
+        Assistant assistant1 = new Assistant(journal, group1);
+        Assistant assistant2 = new Assistant(journal, group2);
+        Assistant assistant3 = new Assistant(journal, group3);
 
         for (int i = 0; i < 10; i++) {
             try {

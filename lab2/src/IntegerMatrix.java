@@ -162,15 +162,13 @@ public class IntegerMatrix {
         return new Result(resultIntegerMatrix, endTime - startTime);
     }
 
-    public Result multiplyStripe(IntegerMatrix integerMatrix) {
+    public Result multiplyStripe(IntegerMatrix integerMatrix, int threadsCount) {
         final long startTime = System.currentTimeMillis();
 
         if (!this.validateMatrixForProduct(integerMatrix)) throw new RuntimeException("Matrix has bad size");
 
         int n = this.getHeight();
         int m = this.getWidth();
-
-        int threadsCount = Runtime.getRuntime().availableProcessors();
 
         ExecutorService threadPool = Executors.newFixedThreadPool(threadsCount);
 
@@ -201,7 +199,7 @@ public class IntegerMatrix {
         return new Result(resultIntegerMatrix, endTime - startTime);
     }
 
-    public Result multiplyFox(IntegerMatrix integerMatrix, int blockSize) {
+    public Result multiplyFox(IntegerMatrix integerMatrix, int blockSize, int threadsCount) {
         final long startTime = System.currentTimeMillis();
 
         if (!this.validateMatrixForProduct(integerMatrix)) throw new RuntimeException("Matrix has bad size");
@@ -215,7 +213,6 @@ public class IntegerMatrix {
         IntegerMatrix[][] blockMatrixARows = blockMatrixA.getArray();
         IntegerMatrix[][] blockMatrixBColumns = blockMatrixB.getTransponedMatrix().getArray();
 
-        int threadsCount = Runtime.getRuntime().availableProcessors();
         ExecutorService threadPool = Executors.newFixedThreadPool(threadsCount);
 
         Future<IntegerMatrix>[][] futureMatrixCArray = new Future[n][m];
