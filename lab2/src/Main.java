@@ -18,7 +18,7 @@ public class Main {
 //        System.out.println(matrix.hasSameElements(matrix));
 
 //        Main.testOnBigMatrix();
-        Main.printAverageStats(2500, 10, 5);
+        Main.printAverageStats(1500, 10, 5);
     }
 
     public static void testOnBigMatrix() {
@@ -51,7 +51,7 @@ public class Main {
 
     public static void printAverageStats(int matrixSize, int blockSize, int testsCount) {
         System.out.println("Matrix size: " + matrixSize);
-        System.out.println("Block size: " + blockSize);
+        System.out.println("Fox block size: " + blockSize);
 
         List<Long> serialTimeList = new ArrayList<>();
 
@@ -81,6 +81,7 @@ public class Main {
             System.out.println("Threads: " + threadsCount);
             List<Long> stripeTimeList = new ArrayList<>();
             List<Long> foxTimeList = new ArrayList<>();
+            List<Long> forkJoinTimeList = new ArrayList<>();
 
             for (int i = 0; i < testsCount; i++) {
                 IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(matrixSize, matrixSize);
@@ -92,6 +93,9 @@ public class Main {
                 Result foxResult = integerMatrix1.multiplyFox(integerMatrix2, blockSize, threadsCount);
                 foxTimeList.add(foxResult.getElapsedTime());
 
+                Result forkJoinResult = integerMatrix1.multiplyForkJoin(integerMatrix2);
+                forkJoinTimeList.add(forkJoinResult.getElapsedTime());
+
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -101,12 +105,15 @@ public class Main {
 
             float averageStripeTime = ((float) stripeTimeList.stream().reduce(Long::sum).get()) / testsCount;
             float averageFoxTime = ((float) foxTimeList.stream().reduce(Long::sum).get()) / testsCount;
+            float averageForkJoinTime = ((float) forkJoinTimeList.stream().reduce(Long::sum).get()) / testsCount;
 
             System.out.printf("Stripe algorithm average execution time: %fs\n", averageStripeTime / 1000);
             System.out.printf("Fox algorithm average execution time: %fs\n", averageFoxTime / 1000);
+            System.out.printf("Fork join algorithm average execution time: %fs\n", averageForkJoinTime / 1000);
 
             System.out.printf("Stripe speed up: %f\n", averageSerialTime / averageStripeTime);
             System.out.printf("Fox speed up: %f\n", averageSerialTime / averageFoxTime);
+            System.out.printf("Fork join speed up: %f\n", averageSerialTime / averageForkJoinTime);
         }
     }
 }
