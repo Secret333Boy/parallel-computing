@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.concurrent.RecursiveTask;
 
 public class WordLengthCharacteristicsTask extends RecursiveTask<OccasionalCharacteristics> {
-    private static final int THRESHOLD = 10;
+    private static final int THRESHOLD = 1000;
 
     private final String[] words;
     private final int start;
@@ -23,8 +23,8 @@ public class WordLengthCharacteristicsTask extends RecursiveTask<OccasionalChara
             dividedTasks.add(new WordLengthCharacteristicsTask(words, start, middleIndex));
             dividedTasks.add(new WordLengthCharacteristicsTask(words, middleIndex, end));
 
-            int Mx = 0;
-            int Mx2 = 0;
+            double Mx = 0;
+            double Mx2 = 0;
 
             for (WordLengthCharacteristicsTask task : invokeAll(dividedTasks)) {
                 OccasionalCharacteristics result = task.join();
@@ -32,6 +32,8 @@ public class WordLengthCharacteristicsTask extends RecursiveTask<OccasionalChara
                 Mx += result.getMathematicalExpectation();
                 Mx2 += result.getMx2();
             }
+
+            return new OccasionalCharacteristics(Mx, Mx2);
         }
 
         Map<Integer, Integer> countMap = new HashMap<>();
@@ -50,18 +52,13 @@ public class WordLengthCharacteristicsTask extends RecursiveTask<OccasionalChara
             countMap.put(wordLength, count + 1);
         }
 
-        Map<Integer, Double> possibilityMap = new HashMap<>();
-
-        for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
-            possibilityMap.put(entry.getKey(), (double) entry.getValue() / (double) words.length);
-        }
-
         double Mx = 0;
         double Mx2 = 0;
 
-        for (Map.Entry<Integer, Double> entry : possibilityMap.entrySet()) {
-            Mx += entry.getKey() * entry.getValue();
-            Mx2 += Math.pow(entry.getKey(), 2) * entry.getValue();
+        for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
+            double possibility = (double) entry.getValue() / (double) words.length;
+            Mx += entry.getKey() * possibility;
+            Mx2 += Math.pow(entry.getKey(), 2) * possibility;
         }
 
         return new OccasionalCharacteristics(Mx, Mx2);

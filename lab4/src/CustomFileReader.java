@@ -12,7 +12,7 @@ public class CustomFileReader {
             String line = reader.readLine();
             if (line == null) break;
 
-            textBuilder.append(line);
+            textBuilder.append(line).append("\n");
         }
 
         return textBuilder.toString();

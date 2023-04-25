@@ -5,23 +5,16 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Main.runTask4();
+        Main.runTask1();
     }
 
     public static void runTask1() throws IOException {
         CustomFileReader customFileReader = new CustomFileReader();
-        String filePath = "E:\\Projects\\parallel-computing\\lab4\\src\\files\\big.txt";
+        String filePath = "E:\\Projects\\parallel-computing\\lab4\\src\\files\\sherlock.txt";
 
         String text = customFileReader.readAll(filePath);
 
         TextAnalyzer textAnalyzer = new TextAnalyzer();
-
-        final long forkJoinStartTime = System.currentTimeMillis();
-        OccasionalCharacteristics occasionalCharacteristicsForkJoin = textAnalyzer.getWordLengthCharacteristics(text);
-        final long forkJoinEndTime = System.currentTimeMillis();
-        System.out.println("Fork join result:");
-        System.out.println("Elapsed: " + (forkJoinEndTime - forkJoinStartTime) + "ms");
-        System.out.println(occasionalCharacteristicsForkJoin);
 
         final long singleThreadStartTime = System.currentTimeMillis();
         OccasionalCharacteristics occasionalCharacteristicsSingleThread = textAnalyzer.getWordLengthCharacteristicsSingleThread(text);
@@ -29,9 +22,18 @@ public class Main {
         System.out.println("Single thread result:");
         System.out.println("Elapsed: " + (singleThreadEndTime - singleThreadStartTime) + "ms");
         System.out.println(occasionalCharacteristicsSingleThread);
+
+        final long forkJoinStartTime = System.currentTimeMillis();
+        OccasionalCharacteristics occasionalCharacteristicsForkJoin = textAnalyzer.getWordLengthCharacteristics(text);
+        final long forkJoinEndTime = System.currentTimeMillis();
+        System.out.println("Fork join result:");
+        System.out.println("Elapsed: " + (forkJoinEndTime - forkJoinStartTime) + "ms");
+        System.out.println(occasionalCharacteristicsForkJoin);
     }
 
-    public static void runTask2() {}
+    public static void runTask2() {
+        // in lab2
+    }
 
     public static void runTask3() throws IOException {
 //        String text1 = "Hello Hello Hello  1";

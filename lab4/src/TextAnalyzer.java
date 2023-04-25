@@ -4,7 +4,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
 public class TextAnalyzer {
-    private final String wordSplitRegexp = "[ \n\t]+";
+    private final String wordSplitRegexp = "\\W+";
 
     public OccasionalCharacteristics getWordLengthCharacteristics(String text) {
         String[] words = text.split(wordSplitRegexp);
@@ -39,18 +39,13 @@ public class TextAnalyzer {
             countMap.put(wordLength, count + 1);
         }
 
-        Map<Integer, Double> possibilityMap = new HashMap<>();
-
-        for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
-            possibilityMap.put(entry.getKey(), (double) entry.getValue() / (double) words.length);
-        }
-
         double Mx = 0;
         double Mx2 = 0;
 
-        for (Map.Entry<Integer, Double> entry : possibilityMap.entrySet()) {
-            Mx += entry.getKey() * entry.getValue();
-            Mx2 += Math.pow(entry.getKey(), 2) * entry.getValue();
+        for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
+            double possibility = (double) entry.getValue() / (double) words.length;
+            Mx += entry.getKey() * possibility;
+            Mx2 += Math.pow(entry.getKey(), 2) * possibility;
         }
 
         return new OccasionalCharacteristics(Mx, Mx2);
