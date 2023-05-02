@@ -18,12 +18,13 @@ public class Main {
 //        System.out.println(matrix.hasSameElements(matrix));
 
 //        Main.testOnBigMatrix();
-        Main.printAverageStats(1500, 10, 5);
+//        Main.testOnBigMatrix();
+         Main.printAverageStats(1000, 10, 5);
     }
 
     public static void testOnBigMatrix() {
-        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(1500, 1500);
-        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(1500, 1500);
+        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(1000, 1000);
+        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(1000, 1000);
 
         Result singleThreadResult = integerMatrix1.multiplySingleThread(integerMatrix2);
         System.out.println("Single thread total execution time: " + (singleThreadResult.getElapsedTime()) + "ms");

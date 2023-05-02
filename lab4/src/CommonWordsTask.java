@@ -36,7 +36,7 @@ public class CommonWordsTask extends RecursiveTask<Set<String>> {
         for (int i = start; i < end; i++) {
             String word1 = words1[i];
             for (String word2 : words2) {
-                if (Objects.equals(word1, word2)) commonWords.add(word1);
+                if (word1.equals(word2)) commonWords.add(word1);
             }
         }
 
