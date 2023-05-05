@@ -1,14 +1,10 @@
 public class OccasionalCharacteristics {
     private final double M;
     private final double Mx2;
-    private final double D;
-    private final double deviation;
 
     public OccasionalCharacteristics(double Mx, double Mx2) {
         this.M = Mx;
         this.Mx2 = Mx2;
-        this.D = Mx2 - Math.pow(Mx, 2);
-        this.deviation = Math.sqrt(D);
     }
 
     public double getMathematicalExpectation() {
@@ -20,15 +16,15 @@ public class OccasionalCharacteristics {
     }
 
     public double getVariance() {
-        return D;
+        return Mx2 - Math.pow(M, 2);
     }
 
     public double getDeviation() {
-        return deviation;
+        return Math.sqrt(this.getVariance());
     }
 
     @Override
     public String toString() {
-        return "M = " + M + "\n" + "D = " + D + "\n" + "V = " + deviation + "\n";
+        return "M = " + M + "\n" + "D = " + this.getVariance() + "\n" + "V = " + this.getDeviation() + "\n";
     }
 }
