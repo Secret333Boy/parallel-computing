@@ -10,7 +10,7 @@ public class Main {
 
     public static void runTask1() throws IOException {
         CustomFileReader customFileReader = new CustomFileReader();
-        String filePath = "E:\\Projects\\parallel-computing\\lab4\\src\\files\\sherlock.txt";
+        String filePath = "E:\\Projects\\parallel-computing\\lab4\\src\\files\\romeo_and_juliet.txt";
 
         String text = customFileReader.readAll(filePath);
 
@@ -20,14 +20,14 @@ public class Main {
         OccasionalCharacteristics occasionalCharacteristicsSingleThread = textAnalyzer.getWordLengthCharacteristicsSingleThread(text);
         final long singleThreadEndTime = System.currentTimeMillis();
         System.out.println("Single thread result:");
-        System.out.println("Elapsed: " + (singleThreadEndTime - singleThreadStartTime) + "ms");
+        System.out.println("Elapsed average: " + (singleThreadEndTime - singleThreadStartTime) + "ms");
         System.out.println(occasionalCharacteristicsSingleThread);
 
         final long forkJoinStartTime = System.currentTimeMillis();
         OccasionalCharacteristics occasionalCharacteristicsForkJoin = textAnalyzer.getWordLengthCharacteristics(text);
         final long forkJoinEndTime = System.currentTimeMillis();
         System.out.println("Fork join result:");
-        System.out.println("Elapsed: " + (forkJoinEndTime - forkJoinStartTime) + "ms");
+        System.out.println("Elapsed average: " + (forkJoinEndTime - forkJoinStartTime) + "ms");
         System.out.println(occasionalCharacteristicsForkJoin);
     }
 

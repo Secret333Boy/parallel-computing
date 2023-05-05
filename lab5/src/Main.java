@@ -1,31 +1,48 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        ServeSystem serveSystem = new ServeSystem(2, 100);
-        serveSystem.start();
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        int parallelTests = 3;
+        int channelsCount = 2;
+        int queueCapacity = 100;
+        int iterations = 1000;
+        int maxProcessTime = 100;
+        int maxTimeBeforeNextServe = 20;
 
-        int unsuccessfulServes = 0;
-        List<Integer> queueSizes = new ArrayList<>();
+        ExecutorService executorService = Executors.newFixedThreadPool(parallelTests);
 
-        int iterations = 1_000;
+        List<Future<ServeSystemTestResult>> resultFutureList = new ArrayList<>();
 
-        for (int i = 0; i < iterations; i++) {
-            int time = Math.toIntExact(Math.round(Math.random() * 100));
+        long startTime = System.currentTimeMillis();
 
-            boolean ok = serveSystem.serve(time);
-            if (!ok) unsuccessfulServes++;
-
-            queueSizes.add(serveSystem.getQueueSize());
-
-            int timeUntilNextServe = Math.toIntExact(Math.round(Math.random() * 20));
-
-            Thread.sleep(timeUntilNextServe);
+        for (int i = 0; i < parallelTests; i++) {
+            resultFutureList.add(executorService.submit(new ServeSystemTestTask(channelsCount, queueCapacity, iterations, maxProcessTime, maxTimeBeforeNextServe)));
         }
-        serveSystem.stop();
 
-        System.out.println("Unsuccessful serve probability: " + unsuccessfulServes * 100 / iterations + "%");
-        System.out.println("Average queue size: " + (double) queueSizes.stream().reduce(Integer::sum).orElseThrow() / (double) iterations);
+        executorService.shutdown();
+
+        double averageQueueSizeSum = 0;
+        double failureProbabilitySum = 0;
+
+        for (Future<ServeSystemTestResult> resultFuture : resultFutureList) {
+            ServeSystemTestResult serveSystemTestResult = resultFuture.get();
+            averageQueueSizeSum += serveSystemTestResult.averageQueueLength();
+            failureProbabilitySum += serveSystemTestResult.failureProbability();
+        }
+
+        long endTime = System.currentTimeMillis();
+
+
+        double averageQueueSize = averageQueueSizeSum / parallelTests;
+        double failureProbability = failureProbabilitySum / parallelTests;
+
+        System.out.println("Final average queue size: " + averageQueueSize + " (" + averageQueueSize * 100 / queueCapacity + "%)");
+        System.out.println("Final failure probability: " + failureProbability * 100 + "%");
+        System.out.println("Total elapsed: " + (endTime - startTime) + "ms");
     }
 }

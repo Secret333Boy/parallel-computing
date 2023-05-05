@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.concurrent.RecursiveTask;
 
 public class WordLengthCharacteristicsTask extends RecursiveTask<OccasionalCharacteristics> {
-    private static final int THRESHOLD = 1000;
+    private static final int THRESHOLD = 99999;
 
     private final String[] words;
     private final int start;

@@ -17,36 +17,36 @@ public class Main {
 //
 //        System.out.println(matrix.hasSameElements(matrix));
 
-//        Main.testOnBigMatrix();
-        Main.printAverageStats(1500, 10, 5);
+        Main.testOnBigMatrix();
+//        Main.printAverageStats(500, 10, 5);
     }
 
     public static void testOnBigMatrix() {
-        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(1500, 1500);
-        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(1500, 1500);
+        IntegerMatrix integerMatrix1 = IntegerMatrix.randomMatrix(500, 500);
+        IntegerMatrix integerMatrix2 = IntegerMatrix.randomMatrix(500, 500);
 
         Result singleThreadResult = integerMatrix1.multiplySingleThread(integerMatrix2);
         System.out.println("Single thread total execution time: " + (singleThreadResult.getElapsedTime()) + "ms");
+//
+//        int threadsCount = 4;
+//
+//        System.out.println("Threads: " + threadsCount);
+//
+//        Result stripeResult = integerMatrix1.multiplyStripe(integerMatrix2, threadsCount);
+//        System.out.println("Stripe algorithm total execution time: " + (stripeResult.getElapsedTime()) + "ms");
+//
+//        int blockSize = 10;
+//        System.out.println("Block size: " + blockSize);
+//
+//        Result foxResult = integerMatrix1.multiplyFox(integerMatrix2, blockSize, threadsCount);
+//        System.out.println("Fox algorithm total execution time: " + (foxResult.getElapsedTime()) + "ms");
 
-        int threadsCount = 4;
+//        Result forkJoinResult = integerMatrix1.multiplyForkJoin(integerMatrix2);
+//        System.out.println("Fork join algorithm total execution time: " + (forkJoinResult.getElapsedTime()) + "ms");
 
-        System.out.println("Threads: " + threadsCount);
-
-        Result stripeResult = integerMatrix1.multiplyStripe(integerMatrix2, threadsCount);
-        System.out.println("Stripe algorithm total execution time: " + (stripeResult.getElapsedTime()) + "ms");
-
-        int blockSize = 10;
-        System.out.println("Block size: " + blockSize);
-
-        Result foxResult = integerMatrix1.multiplyFox(integerMatrix2, blockSize, threadsCount);
-        System.out.println("Fox algorithm total execution time: " + (foxResult.getElapsedTime()) + "ms");
-
-        Result forkJoinResult = integerMatrix1.multiplyForkJoin(integerMatrix2);
-        System.out.println("Fork join algorithm total execution time: " + (forkJoinResult.getElapsedTime()) + "ms");
-
-        System.out.println("Stripe algorithm OK: " + singleThreadResult.compareTo(stripeResult));
-        System.out.println("Fox algorithm OK: " + singleThreadResult.compareTo(foxResult));
-        System.out.println("Fork join algorithm OK: " + singleThreadResult.compareTo(forkJoinResult));
+//        System.out.println("Stripe algorithm OK: " + singleThreadResult.compareTo(stripeResult));
+//        System.out.println("Fox algorithm OK: " + singleThreadResult.compareTo(foxResult));
+//        System.out.println("Fork join algorithm OK: " + singleThreadResult.compareTo(forkJoinResult));
     }
 
     public static void printAverageStats(int matrixSize, int blockSize, int testsCount) {

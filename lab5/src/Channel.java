@@ -4,6 +4,7 @@ public class Channel implements Runnable {
 
     private final BlockingQueue<Integer> queue;
     private boolean terminated = false;
+    private boolean isBusy = false;
 
     public Channel(BlockingQueue<Integer> queue) {
         this.queue = queue;
@@ -14,7 +15,9 @@ public class Channel implements Runnable {
         while (!terminated) {
             try {
                 int time = queue.take();
+                this.isBusy = true;
                 Thread.sleep(time);
+                this.isBusy = false;
                 synchronized (queue) {
                     queue.notifyAll();
                 }
@@ -26,5 +29,9 @@ public class Channel implements Runnable {
 
     public void terminate() {
         this.terminated = true;
+    }
+
+    public boolean isBusy() {
+        return isBusy;
     }
 }
