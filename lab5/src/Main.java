@@ -7,8 +7,8 @@ import java.util.concurrent.Future;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        int parallelTests = 3;
-        int channelsCount = 2;
+        int parallelTests = 5;
+        int channelsCount = 10;
         int queueCapacity = 100;
         int iterations = 1000;
         int maxProcessTime = 100;
