@@ -2,7 +2,7 @@ import mpi.*;
 
 public class BlockingMPI {
     public void runMatrixMultiplication(String[] args) {
-        int matrixSize = 10;
+        int matrixSize = 500;
 
         int[] rows = new int[1];
         int[] offset = new int[1];
@@ -30,6 +30,7 @@ public class BlockingMPI {
                 for (j = 0; j < matrixSize; j++)
                     b[i][j] = 10;
 
+            long timeStart = System.currentTimeMillis();
             averow = matrixSize / numworkers;
             extra = matrixSize % numworkers;
             for (dest = 1; dest <= numworkers; dest++) {
@@ -59,7 +60,9 @@ public class BlockingMPI {
 //                    System.out.printf("%6.2f ", c[i][j]);
 //            }
 //            System.out.print("\n********\n");
-//            System.out.print("Done.\n");
+            System.out.print("Done.\n");
+            long timeFinish = System.currentTimeMillis();
+            System.out.println("Elapsed: " + (timeFinish - timeStart));
         }
 /******** worker task *****************/
         else { /* if (taskid > MASTER) */
